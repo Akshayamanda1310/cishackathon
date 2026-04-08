@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XYZ Academy • Learn. Grow. Succeed.</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Space+Grotesk:wght@500;600&amp;display=swap');
+        
+        :root {
+            --primary: #0ea5e9;
+        }
+        
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+        
+        .logo-font {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .nav-link {
+            transition: all 0.2s ease;
+        }
+        
+        .nav-link.active {
+            color: #0ea5e9;
+            border-bottom: 3px solid #0ea5e9;
+        }
+        
+        .course-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .course-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px -12px rgb(14 165 233 / 0.15);
+        }
+        
+        .alert-badge {
+            animation: ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+        }
+        
+        .modal {
+            animation: modalPop 0.3s ease forwards;
+        }
+        
+        @keyframes modalPop {
+            0% { opacity: 0; transform: scale(0.95); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        
+        .page {
+            display: none;
+        }
+        
+        .page.active {
+            display: block;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <!-- HEADER -->
+    <header class="bg-white border-b sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-8 py-5 flex items-center justify-between">
+            
+            <!-- Logo -->
+            <div class="flex items-center gap-x-3">
+                <div class="w-9 h-9 bg-sky-600 text-white rounded-2xl flex items-center justify-center text-2xl font-bold">XYZ</div>
+                <h1 class="logo-font text-3xl font-semibold tracking-tight text-gray-900">Academy</h1>
+                <span class="text-xs font-medium px-3 py-px bg-sky-100 text-sky-700 rounded-full">LIVE</span>
+            </div>
+
+            <!-- Navigation -->
+            <nav class="hidden md:flex items-center gap-x-8 text-sm font-medium">
+                <a onclick="navigateTo('home')" class="nav-link active flex items-center gap-x-1 cursor-pointer" id="nav-home">
+                    <i class="fa-solid fa-house"></i> Home
+                </a>
+                <a onclick="navigateTo('courses')" class="nav-link flex items-center gap-x-1 cursor-pointer" id="nav-courses">
+                    <i class="fa-solid fa-book-open"></i> Browse Courses
+                </a>
+                <a onclick="navigateTo('updates')" class="nav-link flex items-center gap-x-1 cursor-pointer" id="nav-updates">
+                    <i class="fa-solid fa-fire"></i> Latest Updates
+                </a>
+                <a onclick="navigateTo('history')" class="nav-link flex items-center gap-x-1 cursor-pointer" id="nav-history">
+                    <i class="fa-solid fa-clock-rotate-left"></i> Version History
+                </a>
+            </nav>
+
+            <!-- Right side -->
+            <div class="flex items-center gap-x-6">
+                
+                <!-- Alert Bell -->
+                <div onclick="toggleAlerts()" class="relative cursor-pointer">
+                    <i class="fa-solid fa-bell text-2xl text-gray-700 hover:text-sky-600"></i>
+                    <span id="alert-count" class="alert-badge absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center">3</span>
+                </div>
+
+                <!-- Search -->
+                <div class="relative hidden md:block">
+                    <input id="search-input" 
+                           onkeyup="if(event.key==='Enter') searchCourses()"
+                           type="text" 
+                           placeholder="Search courses..." 
+                           class="bg-gray-100 border border-gray-200 focus:border-sky-300 rounded-3xl pl-5 pr-12 py-3 w-72 text-sm outline-none">
+                    <i onclick="searchCourses()" class="fa-solid fa-magnifying-glass absolute right-5 top-3.5 text-gray-400"></i>
+                </div>
+
+                <!-- Student -->
+                <div class="flex items-center gap-x-2 bg-white border border-gray-200 rounded-3xl pl-2 pr-5 py-1 cursor-pointer hover:border-sky-300">
+                    <div class="w-8 h-8 bg-gradient-to-br from-purple-400 to-sky-400 rounded-2xl flex items-center justify-center text-white text-sm font-bold">SS</div>
+                    <div class="text-sm font-medium">Samhitha</div>
+                </div>
+
+                <!-- Simulate Update Button (for demo) -->
+                <button onclick="simulatePlatformUpdate()" 
+                        class="bg-red-500 hover:bg-red-600 text-white text-sm font-semibold px-6 py-3 rounded-3xl flex items-center gap-x-2">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    <span class="hidden md:inline">Simulate Change</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- PAGE: HOMEPAGE -->
+    <div id="page-home" class="page active">
+        
+        <!-- Hero -->
+        <div class="bg-gradient-to-r from-sky-600 to-blue-700 text-white py-20">
+            <div class="max-w-7xl mx-auto px-8 grid md:grid-cols-2 gap-12 items-center">
+                <div class="space-y-6">
+                    <h1 class="text-6xl font-bold leading-none tracking-tighter logo-font">
+                        Master the Future.<br>Learn Today.
+                    </h1>
+                    <p class="text-xl text-sky-100">100+ expert-led courses • Real-world projects • Lifetime access</p>
+                    
+                    <div class="flex gap-x-4">
+                        <button onclick="navigateTo('courses')" 
+                                class="bg-white text-sky-700 px-8 py-4 rounded-3xl font-semibold text-lg flex items-center gap-x-3 hover:shadow-xl">
+                            Browse All Courses
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                        <button onclick="showFeaturedModal()" 
+                                class="border-2 border-white/70 text-white px-8 py-4 rounded-3xl font-semibold text-lg flex items-center">
+                            Watch 2-min Intro
+                        </button>
+                    </div>
+                    
+                    <div class="flex items-center gap-x-8 text-sm">
+                        <div class="flex items-center"><i class="fa-solid fa-check mr-2"></i> 4.9/5 Average Rating</div>
+                        <div class="flex items-center"><i class="fa-solid fa-check mr-2"></i> 12,450 Students</div>
+                        <div class="flex items-center"><i class="fa-solid fa-check mr-2"></i> Updated April 08, 2026</div>
+                    </div>
+                </div>
+                
+                <div class="hidden md:block bg-white/10 backdrop-blur-xl rounded-3xl p-8 border border-white/30">
+                    <div class="text-center">
+                        <p class="text-sky-100 text-sm mb-3">Featured this week</p>
+                        <h3 class="text-3xl font-semibold">Generative AI Mastery</h3>
+                        <p class="text-sky-100 mt-2">New • Just launched today</p>
+                        <div class="mt-8 flex justify-center text-7xl">🤖</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Categories -->
+        <div class="max-w-7xl mx-auto px-8 py-12">
+            <h2 class="text-2xl font-semibold mb-6 flex items-center gap-x-2"><i class="fa-solid fa-layer-group text-sky-500"></i> Categories</h2>
+            <div class="grid grid-cols-3 md:grid-cols-6 gap-4" id="categories-container">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+
+        <!-- Trending Courses -->
+        <div class="max-w-7xl mx-auto px-8 pb-12">
+            <h2 class="text-2xl font-semibold mb-6 flex items-center justify-between">
+                🔥 Trending Courses
+                <span onclick="navigateTo('courses')" class="text-sm text-sky-600 font-medium cursor-pointer">View all →</span>
+            </h2>
+            <div class="grid md:grid-cols-4 gap-6" id="trending-container">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+
+        <!-- New Courses -->
+        <div class="max-w-7xl mx-auto px-8 pb-12 bg-white">
+            <h2 class="text-2xl font-semibold mb-6 flex items-center"><span class="text-emerald-500">🆕</span> New Courses This Week</h2>
+            <div class="grid md:grid-cols-4 gap-6" id="new-courses-container">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+
+        <!-- Latest Updates Section (VERY IMPORTANT) -->
+        <div class="max-w-7xl mx-auto px-8 pb-12">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-2xl font-semibold flex items-center gap-x-2">🔔 Latest Updates</h2>
+                <button onclick="navigateTo('updates')" class="text-sky-600 text-sm font-medium">View full activity log →</button>
+            </div>
+            <div class="space-y-4" id="latest-updates-home">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- PAGE: COURSE LISTING -->
+    <div id="page-courses" class="page">
+        <div class="max-w-7xl mx-auto px-8 py-10">
+            <h1 class="text-4xl font-bold mb-2">All Courses</h1>
+            <p class="text-gray-600 mb-8">Discover 87 expert-led courses. Filter by category or price.</p>
+            
+            <div class="flex flex-wrap gap-3 mb-8" id="course-filters">
+                <!-- Populated by JS -->
+            </div>
+
+            <div class="grid md:grid-cols-3 lg:grid-cols-4 gap-8" id="all-courses-container">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- PAGE: LATEST UPDATES -->
+    <div id="page-updates" class="page">
+        <div class="max-w-7xl mx-auto px-8 py-10">
+            <h1 class="text-4xl font-bold mb-8">Latest Updates • Live Activity</h1>
+            <div class="space-y-6" id="full-updates-list">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- PAGE: VERSION HISTORY -->
+    <div id="page-history" class="page">
+        <div class="max-w-7xl mx-auto px-8 py-10">
+            <h1 class="text-4xl font-bold mb-2">Platform Version History</h1>
+            <p class="text-gray-600 mb-8">This page shows every change detected on XYZ Academy (used by the Intelligent Website Change Detection System)</p>
+            
+            <div class="bg-white rounded-3xl border overflow-hidden">
+                <table class="w-full">
+                    <thead class="bg-gray-50">
+                        <tr class="text-xs uppercase text-gray-500">
+                            <th class="text-left px-8 py-5">Timestamp</th>
+                            <th class="text-left px-8 py-5">Type</th>
+                            <th class="text-left px-8 py-5">Course / Section</th>
+                            <th class="text-left px-8 py-5">Change</th>
+                            <th class="text-left px-8 py-5">Old → New</th>
+                        </tr>
+                    </thead>
+                    <tbody id="version-table" class="text-sm divide-y">
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- COURSE DETAIL MODAL -->
+    <div onclick="if(event.target.id === 'course-modal')hideCourseModal()" 
+         id="course-modal"
+         class="hidden fixed inset-0 bg-black/70 z-[9999] flex items-center justify-center">
+        
+        <div onclick="event.stopImmediatePropagation()" 
+             class="modal bg-white rounded-3xl max-w-4xl w-full mx-4 overflow-hidden">
+            
+            <div class="px-8 py-6 border-b flex items-center justify-between">
+                <div id="modal-course-title" class="text-3xl font-semibold"></div>
+                <i onclick="hideCourseModal()" class="fa-solid fa-xmark text-3xl cursor-pointer"></i>
+            </div>
+            
+            <div class="p-8 grid md:grid-cols-12 gap-8">
+                <div class="md:col-span-8 space-y-8">
+                    <div>
+                        <h3 class="text-lg font-medium mb-3">Course Description</h3>
+                        <p id="modal-description" class="text-gray-700 leading-relaxed"></p>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-lg font-medium mb-3">Syllabus</h3>
+                        <div id="modal-syllabus" class="space-y-3">
+                            <!-- JS populated -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="md:col-span-4 bg-gray-50 rounded-3xl p-6 space-y-6">
+                    <div>
+                        <div class="text-xs uppercase text-gray-500 mb-1">Instructor</div>
+                        <div id="modal-instructor" class="font-semibold"></div>
+                    </div>
+                    
+                    <div class="flex justify-between items-baseline">
+                        <div>
+                            <div class="text-xs uppercase text-gray-500">Price</div>
+                            <div id="modal-price" class="text-4xl font-bold text-emerald-600"></div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-xs uppercase text-gray-500">Last Updated</div>
+                            <div id="modal-last-updated" class="font-medium"></div>
+                        </div>
+                    </div>
+                    
+                    <button onclick="enrollNow()" 
+                            class="w-full py-6 bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-xl font-semibold rounded-3xl">
+                        Enroll Now • Start Learning
+                    </button>
+                    
+                    <div class="text-xs text-center text-gray-500">30-day money-back guarantee</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ALERT DROPDOWN -->
+    <div onclick="if(event.target.id === 'alert-dropdown')hideAlerts()" 
+         id="alert-dropdown"
+         class="hidden fixed top-16 right-8 bg-white shadow-2xl rounded-3xl w-96 z-[9999] py-2 border">
+        <div class="px-6 py-4 border-b font-semibold flex items-center justify-between">
+            Notifications
+            <span onclick="hideAlerts()" class="text-xs text-gray-400 cursor-pointer">Close</span>
+        </div>
+        <div id="alert-list" class="max-h-96 overflow-auto">
+            <!-- Populated by JS -->
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-8 text-center">
+            <p class="text-sm">© 2026 XYZ Academy • Hyderabad, Telangana • Academic Project Demo</p>
+            <p class="text-xs text-gray-400 mt-3">
+                This website is built for the <strong>Intelligent Website Change Detection System</strong><br>
+                Every change you make (price, course, syllabus, etc.) can be automatically detected!
+            </p>
+            <div class="text-xs mt-8 flex justify-center gap-x-8 text-gray-400">
+                <div>Home • Courses • Updates • History</div>
+                <div>Made for Samhitha • Pure HTML + Tailwind + JS</div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // ==================== DATA (EASY TO EDIT) ====================
+        let coursesDB = [
+            {
+                id: 1,
+                title: "Python for Data Science & AI",
+                instructor: "Dr. Priya Sharma",
+                price: 1499,
+                originalPrice: 2499,
+                rating: 4.9,
+                category: "Programming",
+                lastUpdated: "2026-04-08",
+                description: "Master Python, Pandas, NumPy and build real AI models. Perfect for beginners and professionals.",
+                syllabus: [
+                    "Week 1: Python Basics & Data Types",
+                    "Week 2: Pandas & Data Cleaning",
+                    "Week 3: NumPy & Visualization",
+                    "Week 4: Introduction to Machine Learning"
+                ]
+            },
+            {
+                id: 2,
+                title: "Generative AI Mastery",
+                instructor: "Prof. Anika Rao",
+                price: 2999,
+                originalPrice: 3999,
+                rating: 5.0,
+                category: "AI",
+                lastUpdated: "2026-04-08",
+                description: "Learn to build ChatGPT-like models, image generators and prompt engineering at scale.",
+                syllabus: [
+                    "Introduction to LLMs",
+                    "Fine-tuning GPT models",
+                    "Building AI agents",
+                    "Ethics in Generative AI"
+                ]
+            },
+            {
+                id: 3,
+                title: "Full Stack Web Development 2026",
+                instructor: "Mr. Vikram Singh",
+                price: 1999,
+                originalPrice: 1999,
+                rating: 4.8,
+                category: "Web Dev",
+                lastUpdated: "2026-04-07",
+                description: "HTML, CSS, JavaScript, React, Node.js, MongoDB. Build 5 real-world projects.",
+                syllabus: [
+                    "Frontend Mastery",
+                    "Backend with Node.js",
+                    "Databases & Authentication",
+                    "Deployment & DevOps"
+                ]
+            },
+            {
+                id: 4,
+                title: "Machine Learning Bootcamp",
+                instructor: "Dr. Meera Patel",
+                price: 3499,
+                originalPrice: 4499,
+                rating: 4.7,
+                category: "AI",
+                lastUpdated: "2026-04-06",
+                description: "From regression to deep learning. Includes TensorFlow & PyTorch projects.",
+                syllabus: [
+                    "Supervised Learning",
+                    "Unsupervised Learning",
+                    "Neural Networks",
+                    "Capstone Project"
+                ]
+            },
+            {
+                id: 5,
+                title: "Advanced Data Structures & Algorithms",
+                instructor: "Prof. Arjun Reddy",
+                price: 999,
+                originalPrice: 1299,
+                rating: 4.9,
+                category: "Programming",
+                lastUpdated: "2026-04-05",
+                description: "Crack interviews at FAANG. Master trees, graphs, dynamic programming.",
+                syllabus: [
+                    "Time & Space Complexity",
+                    "Trees & Graphs",
+                    "Dynamic Programming",
+                    "System Design Basics"
+                ]
+            }
+        ]
+
+        let latestUpdatesDB = [
+            {
+                id: 1,
+                time: "11:25 AM",
+                type: "major",
+                message: "New course added: Generative AI Mastery",
+                icon: "🆕"
+            },
+            {
+                id: 2,
+                time: "10:40 AM",
+                type: "major",
+                message: "Price drop on Full Stack Web Development (₹1999 → ₹1499)",
+                icon: "💰"
+            },
+            {
+                id: 3,
+                time: "Yesterday",
+                type: "minor",
+                message: "Syllabus updated in Python for Data Science",
+                icon: "📚"
+            },
+            {
+                id: 4,
+                time: "Yesterday",
+                type: "major",
+                message: "Machine Learning Bootcamp rating increased to 4.9",
+                icon: "⭐"
+            }
+        ]
+
+        let alertsDB = [
+            {
+                id: 1,
+                type: "major",
+                title: "🚨 Price dropped!",
+                message: "Full Stack Web Development is now only ₹1499 (was ₹1999)",
+                time: "Just now"
+            },
+            {
+                id: 2,
+                type: "major",
+                title: "🆕 New Course Launched",
+                message: "Generative AI Mastery is now live",
+                time: "2 hours ago"
+            },
+            {
+                id: 3,
+                type: "minor",
+                title: "📘 Content Updated",
+                message: "Python for Data Science syllabus has been refreshed",
+                time: "Yesterday"
+            }
+        ]
+
+        let versionHistoryDB = [
+            {
+                timestamp: "2026-04-08 11:25",
+                type: "MAJOR",
+                course: "Generative AI Mastery",
+                change: "New course added",
+                oldValue: "—",
+                newValue: "₹2999 • Just launched"
+            },
+            {
+                timestamp: "2026-04-08 10:40",
+                type: "MAJOR",
+                course: "Full Stack Web Development",
+                change: "Price updated",
+                oldValue: "₹1999",
+                newValue: "₹1499"
+            },
+            {
+                timestamp: "2026-04-07 18:15",
+                type: "MINOR",
+                course: "Python for Data Science",
+                change: "Syllabus updated",
+                oldValue: "Week 4: ML Intro",
+                newValue: "Week 4: Neural Networks"
+            }
+        ]
+
+        // ==================== RENDER FUNCTIONS ====================
+        function renderCategories() {
+            const container = document.getElementById('categories-container')
+            const cats = ["Programming", "AI", "Web Dev", "Data Science", "Machine Learning", "Cloud"]
+            container.innerHTML = cats.map(cat => `
+                <div onclick="filterByCategory('${cat}')" 
+                     class="bg-white hover:bg-sky-50 border rounded-3xl px-6 py-4 text-center cursor-pointer font-medium text-sm">
+                    ${cat}
+                </div>
+            `).join('')
+        }
+
+        function renderTrending() {
+            const container = document.getElementById('trending-container')
+            const trending = coursesDB.slice(0, 4)
+            container.innerHTML = trending.map(course => createCourseCard(course)).join('')
+        }
+
+        function renderNewCourses() {
+            const container = document.getElementById('new-courses-container')
+            const newOnes = coursesDB.filter(c => c.lastUpdated === "2026-04-08")
+            container.innerHTML = newOnes.length 
+                ? newOnes.map(course => createCourseCard(course)).join('')
+                : `<p class="col-span-full text-center py-12 text-gray-400">No new courses this week yet</p>`
+        }
+
+        function renderLatestUpdatesHome() {
+            const container = document.getElementById('latest-updates-home')
+            container.innerHTML = latestUpdatesDB.map(update => `
+                <div class="flex items-center gap-x-4 bg-white p-4 rounded-3xl border ${update.type === 'major' ? 'border-red-200' : 'border-gray-100'}">
+                    <div class="text-3xl">${update.icon}</div>
+                    <div class="flex-1">
+                        <p class="font-medium">${update.message}</p>
+                    </div>
+                    <div class="text-xs text-gray-400 whitespace-nowrap">${update.time}</div>
+                </div>
+            `).join('')
+        }
+
+        function createCourseCard(course) {
+            return `
+                <div onclick="showCourseDetail(${course.id})" class="course-card bg-white border rounded-3xl overflow-hidden cursor-pointer">
+                    <div class="p-6">
+                        <div class="flex justify-between items-start">
+                            <span class="px-4 py-1 text-xs font-medium rounded-3xl ${course.category === 'AI' ? 'bg-purple-100 text-purple-700' : 'bg-sky-100 text-sky-700'}">${course.category}</span>
+                            <span class="text-xs text-gray-400">${course.lastUpdated}</span>
+                        </div>
+                        <h3 class="font-semibold text-xl mt-4 leading-tight">${course.title}</h3>
+                        <p class="text-sm text-gray-500 mt-1">${course.instructor}</p>
+                        
+                        <div class="flex items-baseline justify-between mt-8">
+                            <div>
+                                <span class="text-3xl font-bold text-emerald-600">₹${course.price}</span>
+                                ${course.originalPrice !== course.price ? `<span class="line-through text-xs text-gray-400 ml-2">₹${course.originalPrice}</span>` : ''}
+                            </div>
+                            <div class="flex items-center text-amber-500">
+                                ★ <span class="ml-1 text-gray-700">${course.rating}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="border-t px-6 py-4 text-xs flex items-center justify-between text-sky-600">
+                        <span>Enroll Now</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </div>
+                </div>
+            `
+        }
+
+        function renderAllCourses(filteredCourses = coursesDB) {
+            const container = document.getElementById('all-courses-container')
+            container.innerHTML = filteredCourses.map(course => createCourseCard(course)).join('')
+        }
+
+        function renderFullUpdates() {
+            const container = document.getElementById('full-updates-list')
+            container.innerHTML = latestUpdatesDB.map((update, i) => `
+                <div class="flex gap-x-6 items-start bg-white p-6 rounded-3xl border">
+                    <div class="text-4xl">${update.icon}</div>
+                    <div class="flex-1">
+                        <div class="flex justify-between">
+                            <span class="font-semibold">${update.message}</span>
+                            <span class="text-xs text-gray-400">${update.time}</span>
+                        </div>
+                        <div class="mt-2 text-xs ${update.type === 'major' ? 'text-red-500' : 'text-emerald-500'} font-medium">
+                            ${update.type.toUpperCase()} CHANGE
+                        </div>
+                    </div>
+                </div>
+            `).join('')
+        }
+
+        function renderVersionHistory() {
+            const tbody = document.getElementById('version-table')
+            tbody.innerHTML = versionHistoryDB.map(v => `
+                <tr class="hover:bg-gray-50">
+                    <td class="px-8 py-5 font-mono text-xs">${v.timestamp}</td>
+                    <td class="px-8 py-5">
+                        <span class="px-4 py-1 text-xs font-bold rounded-3xl ${v.type === 'MAJOR' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'}">${v.type}</span>
+                    </td>
+                    <td class="px-8 py-5 font-medium">${v.course}</td>
+                    <td class="px-8 py-5">${v.change}</td>
+                    <td class="px-8 py-5 font-mono text-xs">${v.oldValue} → <span class="text-emerald-600">${v.newValue}</span></td>
+                </tr>
+            `).join('')
+        }
+
+        function renderAlerts() {
+            const container = document.getElementById('alert-list')
+            container.innerHTML = alertsDB.map(alert => `
+                <div class="px-6 py-4 hover:bg-gray-50 flex gap-x-4 border-b last:border-none">
+                    <div class="text-2xl">${alert.type === 'major' ? '🚨' : '⚠️'}</div>
+                    <div class="flex-1">
+                        <p class="font-semibold">${alert.title}</p>
+                        <p class="text-sm text-gray-600">${alert.message}</p>
+                        <p class="text-xs text-gray-400 mt-2">${alert.time}</p>
+                    </div>
+                </div>
+            `).join('')
+        }
+
+        // ==================== NAVIGATION ====================
+        function navigateTo(page) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'))
+            // Show selected
+            document.getElementById(`page-${page}`).classList.add('active')
+            
+            // Update active nav
+            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'))
+            const activeLink = document.getElementById(`nav-${page}`)
+            if (activeLink) activeLink.classList.add('active')
+            
+            // Render specific pages
+            if (page === 'courses') renderAllCourses()
+            if (page === 'updates') renderFullUpdates()
+            if (page === 'history') renderVersionHistory()
+        }
+
+        // ==================== COURSE DETAIL ====================
+        let currentCourse = null
+        
+        function showCourseDetail(id) {
+            currentCourse = coursesDB.find(c => c.id === id)
+            if (!currentCourse) return
+            
+            document.getElementById('modal-course-title').textContent = currentCourse.title
+            document.getElementById('modal-description').innerHTML = currentCourse.description
+            document.getElementById('modal-instructor').innerHTML = `<span class="text-sky-600">${currentCourse.instructor}</span>`
+            document.getElementById('modal-price').innerHTML = `₹${currentCourse.price} <span class="text-base font-normal text-gray-400">/lifetime</span>`
+            document.getElementById('modal-last-updated').innerHTML = currentCourse.lastUpdated
+            
+            // Syllabus
+            const syllabusHTML = currentCourse.syllabus.map(item => `
+                <div class="flex items-center gap-x-3 bg-gray-50 px-5 py-3 rounded-2xl text-sm">
+                    <i class="fa-solid fa-check-circle text-emerald-500"></i> ${item}
+                </div>
+            `).join('')
+            document.getElementById('modal-syllabus').innerHTML = syllabusHTML
+            
+            document.getElementById('course-modal').classList.remove('hidden')
+            document.getElementById('course-modal').classList.add('flex')
+        }
+        
+        function hideCourseModal() {
+            const modal = document.getElementById('course-modal')
+            modal.classList.add('hidden')
+            modal.classList.remove('flex')
+            currentCourse = null
+        }
+
+        function enrollNow() {
+            hideCourseModal()
+            setTimeout(() => {
+                alert("🎉 Congratulations! You are now enrolled in " + currentCourse.title + "\n\n(This is a simulation for the academic project)")
+                // Simulate an alert
+                alertsDB.unshift({
+                    id: Date.now(),
+                    type: "major",
+                    title: "✅ Enrollment Successful",
+                    message: `You joined ${currentCourse.title}`,
+                    time: "Just now"
+                })
+                renderAlerts()
+            }, 600)
+        }
+
+        // ==================== ALERTS ====================
+        function toggleAlerts() {
+            const dropdown = document.getElementById('alert-dropdown')
+            if (dropdown.classList.contains('hidden')) {
+                renderAlerts()
+                dropdown.classList.remove('hidden')
+            } else {
+                hideAlerts()
+            }
+        }
+        
+        function hideAlerts() {
+            document.getElementById('alert-dropdown').classList.add('hidden')
+        }
+
+        // ==================== SIMULATE UPDATE (Core for your project) ====================
+        function simulatePlatformUpdate() {
+            // Randomly choose what to change
+            const random = Math.random()
+            
+            if (random < 0.4) {
+                // Price drop
+                const course = coursesDB[2] // Full Stack
+                const oldPrice = course.price
+                course.price = Math.floor(course.price * 0.75)
+                course.lastUpdated = "2026-04-08"
+                
+                // Add to updates & history
+                latestUpdatesDB.unshift({
+                    id: Date.now(),
+                    time: "Just now",
+                    type: "major",
+                    message: `Price dropped for ${course.title} (₹${oldPrice} → ₹${course.price})`,
+                    icon: "💰"
+                })
+                
+                versionHistoryDB.unshift({
+                    timestamp: "2026-04-08 11:36",
+                    type: "MAJOR",
+                    course: course.title,
+                    change: "Price reduced",
+                    oldValue: `₹${oldPrice}`,
+                    newValue: `₹${course.price}`
+                })
+                
+                alert("💰 SIMULATED MAJOR CHANGE:\nPrice of Full Stack Web Development dropped to ₹" + course.price)
+                
+            } else if (random < 0.7) {
+                // New course
+                const newCourse = {
+                    id: Date.now(),
+                    title: "Prompt Engineering for AI",
+                    instructor: "Dr. Neha Kapoor",
+                    price: 899,
+                    originalPrice: 899,
+                    rating: 4.8,
+                    category: "AI",
+                    lastUpdated: "2026-04-08",
+                    description: "Master the art of talking to AI models effectively.",
+                    syllabus: ["Prompt Basics", "Chain of Thought", "Advanced Techniques"]
+                }
+                coursesDB.unshift(newCourse)
+                
+                latestUpdatesDB.unshift({
+                    id: Date.now(),
+                    time: "Just now",
+                    type: "major",
+                    message: "New course added: Prompt Engineering for AI",
+                    icon: "🆕"
+                })
+                
+                versionHistoryDB.unshift({
+                    timestamp: "2026-04-08 11:36",
+                    type: "MAJOR",
+                    course: "Prompt Engineering for AI",
+                    change: "New course launched",
+                    oldValue: "—",
+                    newValue: "₹899"
+                })
+                
+                alert("🆕 SIMULATED MAJOR CHANGE:\nNew course 'Prompt Engineering for AI' added!")
+                
+            } else {
+                // Syllabus update
+                const course = coursesDB[0]
+                course.syllabus.push("Week 5: New AI Integration Module")
+                course.lastUpdated = "2026-04-08"
+                
+                latestUpdatesDB.unshift({
+                    id: Date.now(),
+                    time: "Just now",
+                    type: "minor",
+                    message: `Syllabus updated in ${course.title}`,
+                    icon: "📚"
+                })
+                
+                versionHistoryDB.unshift({
+                    timestamp: "2026-04-08 11:36",
+                    type: "MINOR",
+                    course: course.title,
+                    change: "Syllabus updated",
+                    oldValue: "4 modules",
+                    newValue: "5 modules"
+                })
+                
+                alert("📚 SIMULATED MINOR CHANGE:\nSyllabus of Python for Data Science updated!")
+            }
+            
+            // Refresh all pages
+            renderTrending()
+            renderNewCourses()
+            renderLatestUpdatesHome()
+            renderAllCourses()
+            renderFullUpdates()
+            renderVersionHistory()
+            
+            // Show alert count
+            document.getElementById('alert-count').textContent = alertsDB.length + 1
+        }
+
+        // ==================== FILTERS & SEARCH ====================
+        function filterByCategory(cat) {
+            const filtered = coursesDB.filter(c => c.category === cat)
+            navigateTo('courses')
+            renderAllCourses(filtered)
+        }
+
+        function searchCourses() {
+            const query = document.getElementById('search-input').value.toLowerCase().trim()
+            if (!query) {
+                renderAllCourses()
+                return
+            }
+            const filtered = coursesDB.filter(c => 
+                c.title.toLowerCase().includes(query) || 
+                c.instructor.toLowerCase().includes(query)
+            )
+            navigateTo('courses')
+            renderAllCourses(filtered)
+        }
+
+        // ==================== INITIALIZE ====================
+        window.onload = function () {
+            console.log('%c✅ XYZ Academy Loaded Successfully!', 'background:#0ea5e9;color:white;padding:4px 8px;border-radius:8px;font-size:13px')
+            console.log('This website is ready for your Intelligent Website Change Detection System')
+            
+            renderCategories()
+            renderTrending()
+            renderNewCourses()
+            renderLatestUpdatesHome()
+            renderAlerts()
+            
+            // Make sure homepage is shown
+            navigateTo('home')
+            
+            console.log('💡 Tip: Click "Simulate Change" button to generate new updates that your monitoring system can detect!')
+        }
+    </script>
+</body>
+</html>
